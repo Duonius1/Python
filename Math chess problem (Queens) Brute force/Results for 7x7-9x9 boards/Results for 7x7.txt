@@ -1,0 +1,472 @@
+
+DESCRIPTION
+Place 5 Queens in a N x N chessboard in a way where every cell would either be attacked or occupied by a queen.
+Find the first solution
+Try it with 3 tests: N = 8, 7, 9.
+https://en.wikipedia.org/wiki/Mathematical_chess_problem.
+
+SOLUTION:
+Brute force method by pushing queens forward cell by cell until the solution to
+the problem is found.
+
+LIMITATIONS:
+The program will work best with integers N between 7 and 9.
+The program will cut itself off as soon as it finds the first solution.
+Program is restricted to only work with integers N between 5 and 9
+The progam will not work if you put in anything else other than an integer.
+
+FIRST PART. Data.
+
+1) Board size: 7x7.
+2) Number of queens: 5.
+3) Queen starting coordinates: A1, A2, A3, A4, A5.
+4) The amount of dashes (-) indicate which queen is moving in that step.
+    
+  -----------------------------
+A |   |   |   |   |   |   |   | 
+  -----------------------------
+B |   |   |   |   |   |   |   | 
+  -----------------------------
+C |   |   |   |   |   |   |   | 
+  -----------------------------
+D |   |   |   |   |   |   |   | 
+  -----------------------------
+E |   |   |   |   |   |   |   | 
+  -----------------------------
+F |   |   |   |   |   |   |   | 
+  -----------------------------
+G |   |   |   |   |   |   |   | 
+  -----------------------------
+    1   2   3   4   5   6   7 
+
+ANTRA DALIS. Vykdymas.
+Trying solutions for 7x7 board:
+     1) -----Trying cells: A1, A2, A3, A4, A5; Entire board attacked by queens: No
+     2) -----Trying cells: A1, A2, A3, A4, A6; Entire board attacked by queens: No
+     3) -----Trying cells: A1, A2, A3, A4, A7; Entire board attacked by queens: No
+     4) -----Trying cells: A1, A2, A3, A4, B1; Entire board attacked by queens: No
+     5) -----Trying cells: A1, A2, A3, A4, B2; Entire board attacked by queens: No
+     6) -----Trying cells: A1, A2, A3, A4, B3; Entire board attacked by queens: No
+     7) -----Trying cells: A1, A2, A3, A4, B4; Entire board attacked by queens: No
+     8) -----Trying cells: A1, A2, A3, A4, B5; Entire board attacked by queens: No
+     9) -----Trying cells: A1, A2, A3, A4, B6; Entire board attacked by queens: No
+    10) -----Trying cells: A1, A2, A3, A4, B7; Entire board attacked by queens: No
+    11) -----Trying cells: A1, A2, A3, A4, C1; Entire board attacked by queens: No
+    12) -----Trying cells: A1, A2, A3, A4, C2; Entire board attacked by queens: No
+    13) -----Trying cells: A1, A2, A3, A4, C3; Entire board attacked by queens: No
+    14) -----Trying cells: A1, A2, A3, A4, C4; Entire board attacked by queens: No
+    15) -----Trying cells: A1, A2, A3, A4, C5; Entire board attacked by queens: No
+    16) -----Trying cells: A1, A2, A3, A4, C6; Entire board attacked by queens: No
+    17) -----Trying cells: A1, A2, A3, A4, C7; Entire board attacked by queens: No
+    18) -----Trying cells: A1, A2, A3, A4, D1; Entire board attacked by queens: No
+    19) -----Trying cells: A1, A2, A3, A4, D2; Entire board attacked by queens: No
+    20) -----Trying cells: A1, A2, A3, A4, D3; Entire board attacked by queens: No
+    21) -----Trying cells: A1, A2, A3, A4, D4; Entire board attacked by queens: No
+    22) -----Trying cells: A1, A2, A3, A4, D5; Entire board attacked by queens: No
+    23) -----Trying cells: A1, A2, A3, A4, D6; Entire board attacked by queens: No
+    24) -----Trying cells: A1, A2, A3, A4, D7; Entire board attacked by queens: No
+    25) -----Trying cells: A1, A2, A3, A4, E1; Entire board attacked by queens: No
+    26) -----Trying cells: A1, A2, A3, A4, E2; Entire board attacked by queens: No
+    27) -----Trying cells: A1, A2, A3, A4, E3; Entire board attacked by queens: No
+    28) -----Trying cells: A1, A2, A3, A4, E4; Entire board attacked by queens: No
+    29) -----Trying cells: A1, A2, A3, A4, E5; Entire board attacked by queens: No
+    30) -----Trying cells: A1, A2, A3, A4, E6; Entire board attacked by queens: No
+    31) -----Trying cells: A1, A2, A3, A4, E7; Entire board attacked by queens: No
+    32) -----Trying cells: A1, A2, A3, A4, F1; Entire board attacked by queens: No
+    33) -----Trying cells: A1, A2, A3, A4, F2; Entire board attacked by queens: No
+    34) -----Trying cells: A1, A2, A3, A4, F3; Entire board attacked by queens: No
+    35) -----Trying cells: A1, A2, A3, A4, F4; Entire board attacked by queens: No
+    36) -----Trying cells: A1, A2, A3, A4, F5; Entire board attacked by queens: No
+    37) -----Trying cells: A1, A2, A3, A4, F6; Entire board attacked by queens: No
+    38) -----Trying cells: A1, A2, A3, A4, F7; Entire board attacked by queens: No
+    39) -----Trying cells: A1, A2, A3, A4, G1; Entire board attacked by queens: No
+    40) -----Trying cells: A1, A2, A3, A4, G2; Entire board attacked by queens: No
+    41) -----Trying cells: A1, A2, A3, A4, G3; Entire board attacked by queens: No
+    42) -----Trying cells: A1, A2, A3, A4, G4; Entire board attacked by queens: No
+    43) -----Trying cells: A1, A2, A3, A4, G5; Entire board attacked by queens: No
+    44) -----Trying cells: A1, A2, A3, A4, G6; Entire board attacked by queens: No
+    45) -----Trying cells: A1, A2, A3, A4, G7; Entire board attacked by queens: No
+    46) ----Trying cells: A1, A2, A3, A5, G7; Entire board attacked by queens: No
+    47) -----Trying cells: A1, A2, A3, A5, A6; Entire board attacked by queens: No
+    48) -----Trying cells: A1, A2, A3, A5, A7; Entire board attacked by queens: No
+    49) -----Trying cells: A1, A2, A3, A5, B1; Entire board attacked by queens: No
+    50) -----Trying cells: A1, A2, A3, A5, B2; Entire board attacked by queens: No
+    51) -----Trying cells: A1, A2, A3, A5, B3; Entire board attacked by queens: No
+    52) -----Trying cells: A1, A2, A3, A5, B4; Entire board attacked by queens: No
+    53) -----Trying cells: A1, A2, A3, A5, B5; Entire board attacked by queens: No
+    54) -----Trying cells: A1, A2, A3, A5, B6; Entire board attacked by queens: No
+    55) -----Trying cells: A1, A2, A3, A5, B7; Entire board attacked by queens: No
+    56) -----Trying cells: A1, A2, A3, A5, C1; Entire board attacked by queens: No
+    57) -----Trying cells: A1, A2, A3, A5, C2; Entire board attacked by queens: No
+    58) -----Trying cells: A1, A2, A3, A5, C3; Entire board attacked by queens: No
+    59) -----Trying cells: A1, A2, A3, A5, C4; Entire board attacked by queens: No
+    60) -----Trying cells: A1, A2, A3, A5, C5; Entire board attacked by queens: No
+    61) -----Trying cells: A1, A2, A3, A5, C6; Entire board attacked by queens: No
+    62) -----Trying cells: A1, A2, A3, A5, C7; Entire board attacked by queens: No
+    63) -----Trying cells: A1, A2, A3, A5, D1; Entire board attacked by queens: No
+    64) -----Trying cells: A1, A2, A3, A5, D2; Entire board attacked by queens: No
+    65) -----Trying cells: A1, A2, A3, A5, D3; Entire board attacked by queens: No
+    66) -----Trying cells: A1, A2, A3, A5, D4; Entire board attacked by queens: No
+    67) -----Trying cells: A1, A2, A3, A5, D5; Entire board attacked by queens: No
+    68) -----Trying cells: A1, A2, A3, A5, D6; Entire board attacked by queens: No
+    69) -----Trying cells: A1, A2, A3, A5, D7; Entire board attacked by queens: No
+    70) -----Trying cells: A1, A2, A3, A5, E1; Entire board attacked by queens: No
+    71) -----Trying cells: A1, A2, A3, A5, E2; Entire board attacked by queens: No
+    72) -----Trying cells: A1, A2, A3, A5, E3; Entire board attacked by queens: No
+    73) -----Trying cells: A1, A2, A3, A5, E4; Entire board attacked by queens: No
+    74) -----Trying cells: A1, A2, A3, A5, E5; Entire board attacked by queens: No
+    75) -----Trying cells: A1, A2, A3, A5, E6; Entire board attacked by queens: No
+    76) -----Trying cells: A1, A2, A3, A5, E7; Entire board attacked by queens: No
+    77) -----Trying cells: A1, A2, A3, A5, F1; Entire board attacked by queens: No
+    78) -----Trying cells: A1, A2, A3, A5, F2; Entire board attacked by queens: No
+    79) -----Trying cells: A1, A2, A3, A5, F3; Entire board attacked by queens: No
+    80) -----Trying cells: A1, A2, A3, A5, F4; Entire board attacked by queens: No
+    81) -----Trying cells: A1, A2, A3, A5, F5; Entire board attacked by queens: No
+    82) -----Trying cells: A1, A2, A3, A5, F6; Entire board attacked by queens: No
+    83) -----Trying cells: A1, A2, A3, A5, F7; Entire board attacked by queens: No
+    84) -----Trying cells: A1, A2, A3, A5, G1; Entire board attacked by queens: No
+    85) -----Trying cells: A1, A2, A3, A5, G2; Entire board attacked by queens: No
+    86) -----Trying cells: A1, A2, A3, A5, G3; Entire board attacked by queens: No
+    87) -----Trying cells: A1, A2, A3, A5, G4; Entire board attacked by queens: No
+    88) -----Trying cells: A1, A2, A3, A5, G5; Entire board attacked by queens: No
+    89) -----Trying cells: A1, A2, A3, A5, G6; Entire board attacked by queens: No
+    90) -----Trying cells: A1, A2, A3, A5, G7; Entire board attacked by queens: No
+    91) ----Trying cells: A1, A2, A3, A6, G7; Entire board attacked by queens: No
+    92) -----Trying cells: A1, A2, A3, A6, A7; Entire board attacked by queens: No
+    93) -----Trying cells: A1, A2, A3, A6, B1; Entire board attacked by queens: No
+    94) -----Trying cells: A1, A2, A3, A6, B2; Entire board attacked by queens: No
+    95) -----Trying cells: A1, A2, A3, A6, B3; Entire board attacked by queens: No
+    96) -----Trying cells: A1, A2, A3, A6, B4; Entire board attacked by queens: No
+    97) -----Trying cells: A1, A2, A3, A6, B5; Entire board attacked by queens: No
+    98) -----Trying cells: A1, A2, A3, A6, B6; Entire board attacked by queens: No
+    99) -----Trying cells: A1, A2, A3, A6, B7; Entire board attacked by queens: No
+   100) -----Trying cells: A1, A2, A3, A6, C1; Entire board attacked by queens: No
+   101) -----Trying cells: A1, A2, A3, A6, C2; Entire board attacked by queens: No
+   102) -----Trying cells: A1, A2, A3, A6, C3; Entire board attacked by queens: No
+   103) -----Trying cells: A1, A2, A3, A6, C4; Entire board attacked by queens: No
+   104) -----Trying cells: A1, A2, A3, A6, C5; Entire board attacked by queens: No
+   105) -----Trying cells: A1, A2, A3, A6, C6; Entire board attacked by queens: No
+   106) -----Trying cells: A1, A2, A3, A6, C7; Entire board attacked by queens: No
+   107) -----Trying cells: A1, A2, A3, A6, D1; Entire board attacked by queens: No
+   108) -----Trying cells: A1, A2, A3, A6, D2; Entire board attacked by queens: No
+   109) -----Trying cells: A1, A2, A3, A6, D3; Entire board attacked by queens: No
+   110) -----Trying cells: A1, A2, A3, A6, D4; Entire board attacked by queens: No
+   111) -----Trying cells: A1, A2, A3, A6, D5; Entire board attacked by queens: No
+   112) -----Trying cells: A1, A2, A3, A6, D6; Entire board attacked by queens: No
+   113) -----Trying cells: A1, A2, A3, A6, D7; Entire board attacked by queens: No
+   114) -----Trying cells: A1, A2, A3, A6, E1; Entire board attacked by queens: No
+   115) -----Trying cells: A1, A2, A3, A6, E2; Entire board attacked by queens: No
+   116) -----Trying cells: A1, A2, A3, A6, E3; Entire board attacked by queens: No
+   117) -----Trying cells: A1, A2, A3, A6, E4; Entire board attacked by queens: No
+   118) -----Trying cells: A1, A2, A3, A6, E5; Entire board attacked by queens: No
+   119) -----Trying cells: A1, A2, A3, A6, E6; Entire board attacked by queens: No
+   120) -----Trying cells: A1, A2, A3, A6, E7; Entire board attacked by queens: No
+   121) -----Trying cells: A1, A2, A3, A6, F1; Entire board attacked by queens: No
+   122) -----Trying cells: A1, A2, A3, A6, F2; Entire board attacked by queens: No
+   123) -----Trying cells: A1, A2, A3, A6, F3; Entire board attacked by queens: No
+   124) -----Trying cells: A1, A2, A3, A6, F4; Entire board attacked by queens: No
+   125) -----Trying cells: A1, A2, A3, A6, F5; Entire board attacked by queens: No
+   126) -----Trying cells: A1, A2, A3, A6, F6; Entire board attacked by queens: No
+   127) -----Trying cells: A1, A2, A3, A6, F7; Entire board attacked by queens: No
+   128) -----Trying cells: A1, A2, A3, A6, G1; Entire board attacked by queens: No
+   129) -----Trying cells: A1, A2, A3, A6, G2; Entire board attacked by queens: No
+   130) -----Trying cells: A1, A2, A3, A6, G3; Entire board attacked by queens: No
+   131) -----Trying cells: A1, A2, A3, A6, G4; Entire board attacked by queens: No
+   132) -----Trying cells: A1, A2, A3, A6, G5; Entire board attacked by queens: No
+   133) -----Trying cells: A1, A2, A3, A6, G6; Entire board attacked by queens: No
+   134) -----Trying cells: A1, A2, A3, A6, G7; Entire board attacked by queens: No
+   135) ----Trying cells: A1, A2, A3, A7, G7; Entire board attacked by queens: No
+   136) -----Trying cells: A1, A2, A3, A7, B1; Entire board attacked by queens: No
+   137) -----Trying cells: A1, A2, A3, A7, B2; Entire board attacked by queens: No
+   138) -----Trying cells: A1, A2, A3, A7, B3; Entire board attacked by queens: No
+   139) -----Trying cells: A1, A2, A3, A7, B4; Entire board attacked by queens: No
+   140) -----Trying cells: A1, A2, A3, A7, B5; Entire board attacked by queens: No
+   141) -----Trying cells: A1, A2, A3, A7, B6; Entire board attacked by queens: No
+   142) -----Trying cells: A1, A2, A3, A7, B7; Entire board attacked by queens: No
+   143) -----Trying cells: A1, A2, A3, A7, C1; Entire board attacked by queens: No
+   144) -----Trying cells: A1, A2, A3, A7, C2; Entire board attacked by queens: No
+   145) -----Trying cells: A1, A2, A3, A7, C3; Entire board attacked by queens: No
+   146) -----Trying cells: A1, A2, A3, A7, C4; Entire board attacked by queens: No
+   147) -----Trying cells: A1, A2, A3, A7, C5; Entire board attacked by queens: No
+   148) -----Trying cells: A1, A2, A3, A7, C6; Entire board attacked by queens: No
+   149) -----Trying cells: A1, A2, A3, A7, C7; Entire board attacked by queens: No
+   150) -----Trying cells: A1, A2, A3, A7, D1; Entire board attacked by queens: No
+   151) -----Trying cells: A1, A2, A3, A7, D2; Entire board attacked by queens: No
+   152) -----Trying cells: A1, A2, A3, A7, D3; Entire board attacked by queens: No
+   153) -----Trying cells: A1, A2, A3, A7, D4; Entire board attacked by queens: No
+   154) -----Trying cells: A1, A2, A3, A7, D5; Entire board attacked by queens: No
+   155) -----Trying cells: A1, A2, A3, A7, D6; Entire board attacked by queens: No
+   156) -----Trying cells: A1, A2, A3, A7, D7; Entire board attacked by queens: No
+   157) -----Trying cells: A1, A2, A3, A7, E1; Entire board attacked by queens: No
+   158) -----Trying cells: A1, A2, A3, A7, E2; Entire board attacked by queens: No
+   159) -----Trying cells: A1, A2, A3, A7, E3; Entire board attacked by queens: No
+   160) -----Trying cells: A1, A2, A3, A7, E4; Entire board attacked by queens: No
+   161) -----Trying cells: A1, A2, A3, A7, E5; Entire board attacked by queens: No
+   162) -----Trying cells: A1, A2, A3, A7, E6; Entire board attacked by queens: No
+   163) -----Trying cells: A1, A2, A3, A7, E7; Entire board attacked by queens: No
+   164) -----Trying cells: A1, A2, A3, A7, F1; Entire board attacked by queens: No
+   165) -----Trying cells: A1, A2, A3, A7, F2; Entire board attacked by queens: No
+   166) -----Trying cells: A1, A2, A3, A7, F3; Entire board attacked by queens: No
+   167) -----Trying cells: A1, A2, A3, A7, F4; Entire board attacked by queens: No
+   168) -----Trying cells: A1, A2, A3, A7, F5; Entire board attacked by queens: No
+   169) -----Trying cells: A1, A2, A3, A7, F6; Entire board attacked by queens: No
+   170) -----Trying cells: A1, A2, A3, A7, F7; Entire board attacked by queens: No
+   171) -----Trying cells: A1, A2, A3, A7, G1; Entire board attacked by queens: No
+   172) -----Trying cells: A1, A2, A3, A7, G2; Entire board attacked by queens: No
+   173) -----Trying cells: A1, A2, A3, A7, G3; Entire board attacked by queens: No
+   174) -----Trying cells: A1, A2, A3, A7, G4; Entire board attacked by queens: No
+   175) -----Trying cells: A1, A2, A3, A7, G5; Entire board attacked by queens: No
+   176) -----Trying cells: A1, A2, A3, A7, G6; Entire board attacked by queens: No
+   177) -----Trying cells: A1, A2, A3, A7, G7; Entire board attacked by queens: No
+   178) ----Trying cells: A1, A2, A3, B1, G7; Entire board attacked by queens: No
+   179) -----Trying cells: A1, A2, A3, B1, B2; Entire board attacked by queens: No
+   180) -----Trying cells: A1, A2, A3, B1, B3; Entire board attacked by queens: No
+   181) -----Trying cells: A1, A2, A3, B1, B4; Entire board attacked by queens: No
+   182) -----Trying cells: A1, A2, A3, B1, B5; Entire board attacked by queens: No
+   183) -----Trying cells: A1, A2, A3, B1, B6; Entire board attacked by queens: No
+   184) -----Trying cells: A1, A2, A3, B1, B7; Entire board attacked by queens: No
+   185) -----Trying cells: A1, A2, A3, B1, C1; Entire board attacked by queens: No
+   186) -----Trying cells: A1, A2, A3, B1, C2; Entire board attacked by queens: No
+   187) -----Trying cells: A1, A2, A3, B1, C3; Entire board attacked by queens: No
+   188) -----Trying cells: A1, A2, A3, B1, C4; Entire board attacked by queens: No
+   189) -----Trying cells: A1, A2, A3, B1, C5; Entire board attacked by queens: No
+   190) -----Trying cells: A1, A2, A3, B1, C6; Entire board attacked by queens: No
+   191) -----Trying cells: A1, A2, A3, B1, C7; Entire board attacked by queens: No
+   192) -----Trying cells: A1, A2, A3, B1, D1; Entire board attacked by queens: No
+   193) -----Trying cells: A1, A2, A3, B1, D2; Entire board attacked by queens: No
+   194) -----Trying cells: A1, A2, A3, B1, D3; Entire board attacked by queens: No
+   195) -----Trying cells: A1, A2, A3, B1, D4; Entire board attacked by queens: No
+   196) -----Trying cells: A1, A2, A3, B1, D5; Entire board attacked by queens: No
+   197) -----Trying cells: A1, A2, A3, B1, D6; Entire board attacked by queens: No
+   198) -----Trying cells: A1, A2, A3, B1, D7; Entire board attacked by queens: No
+   199) -----Trying cells: A1, A2, A3, B1, E1; Entire board attacked by queens: No
+   200) -----Trying cells: A1, A2, A3, B1, E2; Entire board attacked by queens: No
+   201) -----Trying cells: A1, A2, A3, B1, E3; Entire board attacked by queens: No
+   202) -----Trying cells: A1, A2, A3, B1, E4; Entire board attacked by queens: No
+   203) -----Trying cells: A1, A2, A3, B1, E5; Entire board attacked by queens: No
+   204) -----Trying cells: A1, A2, A3, B1, E6; Entire board attacked by queens: No
+   205) -----Trying cells: A1, A2, A3, B1, E7; Entire board attacked by queens: No
+   206) -----Trying cells: A1, A2, A3, B1, F1; Entire board attacked by queens: No
+   207) -----Trying cells: A1, A2, A3, B1, F2; Entire board attacked by queens: No
+   208) -----Trying cells: A1, A2, A3, B1, F3; Entire board attacked by queens: No
+   209) -----Trying cells: A1, A2, A3, B1, F4; Entire board attacked by queens: No
+   210) -----Trying cells: A1, A2, A3, B1, F5; Entire board attacked by queens: No
+   211) -----Trying cells: A1, A2, A3, B1, F6; Entire board attacked by queens: No
+   212) -----Trying cells: A1, A2, A3, B1, F7; Entire board attacked by queens: No
+   213) -----Trying cells: A1, A2, A3, B1, G1; Entire board attacked by queens: No
+   214) -----Trying cells: A1, A2, A3, B1, G2; Entire board attacked by queens: No
+   215) -----Trying cells: A1, A2, A3, B1, G3; Entire board attacked by queens: No
+   216) -----Trying cells: A1, A2, A3, B1, G4; Entire board attacked by queens: No
+   217) -----Trying cells: A1, A2, A3, B1, G5; Entire board attacked by queens: No
+   218) -----Trying cells: A1, A2, A3, B1, G6; Entire board attacked by queens: No
+   219) -----Trying cells: A1, A2, A3, B1, G7; Entire board attacked by queens: No
+   220) ----Trying cells: A1, A2, A3, B2, G7; Entire board attacked by queens: No
+   221) -----Trying cells: A1, A2, A3, B2, B3; Entire board attacked by queens: No
+   222) -----Trying cells: A1, A2, A3, B2, B4; Entire board attacked by queens: No
+   223) -----Trying cells: A1, A2, A3, B2, B5; Entire board attacked by queens: No
+   224) -----Trying cells: A1, A2, A3, B2, B6; Entire board attacked by queens: No
+   225) -----Trying cells: A1, A2, A3, B2, B7; Entire board attacked by queens: No
+   226) -----Trying cells: A1, A2, A3, B2, C1; Entire board attacked by queens: No
+   227) -----Trying cells: A1, A2, A3, B2, C2; Entire board attacked by queens: No
+   228) -----Trying cells: A1, A2, A3, B2, C3; Entire board attacked by queens: No
+   229) -----Trying cells: A1, A2, A3, B2, C4; Entire board attacked by queens: No
+   230) -----Trying cells: A1, A2, A3, B2, C5; Entire board attacked by queens: No
+   231) -----Trying cells: A1, A2, A3, B2, C6; Entire board attacked by queens: No
+   232) -----Trying cells: A1, A2, A3, B2, C7; Entire board attacked by queens: No
+   233) -----Trying cells: A1, A2, A3, B2, D1; Entire board attacked by queens: No
+   234) -----Trying cells: A1, A2, A3, B2, D2; Entire board attacked by queens: No
+   235) -----Trying cells: A1, A2, A3, B2, D3; Entire board attacked by queens: No
+   236) -----Trying cells: A1, A2, A3, B2, D4; Entire board attacked by queens: No
+   237) -----Trying cells: A1, A2, A3, B2, D5; Entire board attacked by queens: No
+   238) -----Trying cells: A1, A2, A3, B2, D6; Entire board attacked by queens: No
+   239) -----Trying cells: A1, A2, A3, B2, D7; Entire board attacked by queens: No
+   240) -----Trying cells: A1, A2, A3, B2, E1; Entire board attacked by queens: No
+   241) -----Trying cells: A1, A2, A3, B2, E2; Entire board attacked by queens: No
+   242) -----Trying cells: A1, A2, A3, B2, E3; Entire board attacked by queens: No
+   243) -----Trying cells: A1, A2, A3, B2, E4; Entire board attacked by queens: No
+   244) -----Trying cells: A1, A2, A3, B2, E5; Entire board attacked by queens: No
+   245) -----Trying cells: A1, A2, A3, B2, E6; Entire board attacked by queens: No
+   246) -----Trying cells: A1, A2, A3, B2, E7; Entire board attacked by queens: No
+   247) -----Trying cells: A1, A2, A3, B2, F1; Entire board attacked by queens: No
+   248) -----Trying cells: A1, A2, A3, B2, F2; Entire board attacked by queens: No
+   249) -----Trying cells: A1, A2, A3, B2, F3; Entire board attacked by queens: No
+   250) -----Trying cells: A1, A2, A3, B2, F4; Entire board attacked by queens: No
+   251) -----Trying cells: A1, A2, A3, B2, F5; Entire board attacked by queens: No
+   252) -----Trying cells: A1, A2, A3, B2, F6; Entire board attacked by queens: No
+   253) -----Trying cells: A1, A2, A3, B2, F7; Entire board attacked by queens: No
+   254) -----Trying cells: A1, A2, A3, B2, G1; Entire board attacked by queens: No
+   255) -----Trying cells: A1, A2, A3, B2, G2; Entire board attacked by queens: No
+   256) -----Trying cells: A1, A2, A3, B2, G3; Entire board attacked by queens: No
+   257) -----Trying cells: A1, A2, A3, B2, G4; Entire board attacked by queens: No
+   258) -----Trying cells: A1, A2, A3, B2, G5; Entire board attacked by queens: No
+   259) -----Trying cells: A1, A2, A3, B2, G6; Entire board attacked by queens: No
+   260) -----Trying cells: A1, A2, A3, B2, G7; Entire board attacked by queens: No
+   261) ----Trying cells: A1, A2, A3, B3, G7; Entire board attacked by queens: No
+   262) -----Trying cells: A1, A2, A3, B3, B4; Entire board attacked by queens: No
+   263) -----Trying cells: A1, A2, A3, B3, B5; Entire board attacked by queens: No
+   264) -----Trying cells: A1, A2, A3, B3, B6; Entire board attacked by queens: No
+   265) -----Trying cells: A1, A2, A3, B3, B7; Entire board attacked by queens: No
+   266) -----Trying cells: A1, A2, A3, B3, C1; Entire board attacked by queens: No
+   267) -----Trying cells: A1, A2, A3, B3, C2; Entire board attacked by queens: No
+   268) -----Trying cells: A1, A2, A3, B3, C3; Entire board attacked by queens: No
+   269) -----Trying cells: A1, A2, A3, B3, C4; Entire board attacked by queens: No
+   270) -----Trying cells: A1, A2, A3, B3, C5; Entire board attacked by queens: No
+   271) -----Trying cells: A1, A2, A3, B3, C6; Entire board attacked by queens: No
+   272) -----Trying cells: A1, A2, A3, B3, C7; Entire board attacked by queens: No
+   273) -----Trying cells: A1, A2, A3, B3, D1; Entire board attacked by queens: No
+   274) -----Trying cells: A1, A2, A3, B3, D2; Entire board attacked by queens: No
+   275) -----Trying cells: A1, A2, A3, B3, D3; Entire board attacked by queens: No
+   276) -----Trying cells: A1, A2, A3, B3, D4; Entire board attacked by queens: No
+   277) -----Trying cells: A1, A2, A3, B3, D5; Entire board attacked by queens: No
+   278) -----Trying cells: A1, A2, A3, B3, D6; Entire board attacked by queens: No
+   279) -----Trying cells: A1, A2, A3, B3, D7; Entire board attacked by queens: No
+   280) -----Trying cells: A1, A2, A3, B3, E1; Entire board attacked by queens: No
+   281) -----Trying cells: A1, A2, A3, B3, E2; Entire board attacked by queens: No
+   282) -----Trying cells: A1, A2, A3, B3, E3; Entire board attacked by queens: No
+   283) -----Trying cells: A1, A2, A3, B3, E4; Entire board attacked by queens: No
+   284) -----Trying cells: A1, A2, A3, B3, E5; Entire board attacked by queens: No
+   285) -----Trying cells: A1, A2, A3, B3, E6; Entire board attacked by queens: No
+   286) -----Trying cells: A1, A2, A3, B3, E7; Entire board attacked by queens: No
+   287) -----Trying cells: A1, A2, A3, B3, F1; Entire board attacked by queens: No
+   288) -----Trying cells: A1, A2, A3, B3, F2; Entire board attacked by queens: No
+   289) -----Trying cells: A1, A2, A3, B3, F3; Entire board attacked by queens: No
+   290) -----Trying cells: A1, A2, A3, B3, F4; Entire board attacked by queens: No
+   291) -----Trying cells: A1, A2, A3, B3, F5; Entire board attacked by queens: No
+   292) -----Trying cells: A1, A2, A3, B3, F6; Entire board attacked by queens: No
+   293) -----Trying cells: A1, A2, A3, B3, F7; Entire board attacked by queens: No
+   294) -----Trying cells: A1, A2, A3, B3, G1; Entire board attacked by queens: No
+   295) -----Trying cells: A1, A2, A3, B3, G2; Entire board attacked by queens: No
+   296) -----Trying cells: A1, A2, A3, B3, G3; Entire board attacked by queens: No
+   297) -----Trying cells: A1, A2, A3, B3, G4; Entire board attacked by queens: No
+   298) -----Trying cells: A1, A2, A3, B3, G5; Entire board attacked by queens: No
+   299) -----Trying cells: A1, A2, A3, B3, G6; Entire board attacked by queens: No
+   300) -----Trying cells: A1, A2, A3, B3, G7; Entire board attacked by queens: No
+   301) ----Trying cells: A1, A2, A3, B4, G7; Entire board attacked by queens: No
+   302) -----Trying cells: A1, A2, A3, B4, B5; Entire board attacked by queens: No
+   303) -----Trying cells: A1, A2, A3, B4, B6; Entire board attacked by queens: No
+   304) -----Trying cells: A1, A2, A3, B4, B7; Entire board attacked by queens: No
+   305) -----Trying cells: A1, A2, A3, B4, C1; Entire board attacked by queens: No
+   306) -----Trying cells: A1, A2, A3, B4, C2; Entire board attacked by queens: No
+   307) -----Trying cells: A1, A2, A3, B4, C3; Entire board attacked by queens: No
+   308) -----Trying cells: A1, A2, A3, B4, C4; Entire board attacked by queens: No
+   309) -----Trying cells: A1, A2, A3, B4, C5; Entire board attacked by queens: No
+   310) -----Trying cells: A1, A2, A3, B4, C6; Entire board attacked by queens: No
+   311) -----Trying cells: A1, A2, A3, B4, C7; Entire board attacked by queens: No
+   312) -----Trying cells: A1, A2, A3, B4, D1; Entire board attacked by queens: No
+   313) -----Trying cells: A1, A2, A3, B4, D2; Entire board attacked by queens: No
+   314) -----Trying cells: A1, A2, A3, B4, D3; Entire board attacked by queens: No
+   315) -----Trying cells: A1, A2, A3, B4, D4; Entire board attacked by queens: No
+   316) -----Trying cells: A1, A2, A3, B4, D5; Entire board attacked by queens: No
+   317) -----Trying cells: A1, A2, A3, B4, D6; Entire board attacked by queens: No
+   318) -----Trying cells: A1, A2, A3, B4, D7; Entire board attacked by queens: No
+   319) -----Trying cells: A1, A2, A3, B4, E1; Entire board attacked by queens: No
+   320) -----Trying cells: A1, A2, A3, B4, E2; Entire board attacked by queens: No
+   321) -----Trying cells: A1, A2, A3, B4, E3; Entire board attacked by queens: No
+   322) -----Trying cells: A1, A2, A3, B4, E4; Entire board attacked by queens: No
+   323) -----Trying cells: A1, A2, A3, B4, E5; Entire board attacked by queens: No
+   324) -----Trying cells: A1, A2, A3, B4, E6; Entire board attacked by queens: No
+   325) -----Trying cells: A1, A2, A3, B4, E7; Entire board attacked by queens: No
+   326) -----Trying cells: A1, A2, A3, B4, F1; Entire board attacked by queens: No
+   327) -----Trying cells: A1, A2, A3, B4, F2; Entire board attacked by queens: No
+   328) -----Trying cells: A1, A2, A3, B4, F3; Entire board attacked by queens: No
+   329) -----Trying cells: A1, A2, A3, B4, F4; Entire board attacked by queens: No
+   330) -----Trying cells: A1, A2, A3, B4, F5; Entire board attacked by queens: No
+   331) -----Trying cells: A1, A2, A3, B4, F6; Entire board attacked by queens: No
+   332) -----Trying cells: A1, A2, A3, B4, F7; Entire board attacked by queens: No
+   333) -----Trying cells: A1, A2, A3, B4, G1; Entire board attacked by queens: No
+   334) -----Trying cells: A1, A2, A3, B4, G2; Entire board attacked by queens: No
+   335) -----Trying cells: A1, A2, A3, B4, G3; Entire board attacked by queens: No
+   336) -----Trying cells: A1, A2, A3, B4, G4; Entire board attacked by queens: No
+   337) -----Trying cells: A1, A2, A3, B4, G5; Entire board attacked by queens: No
+   338) -----Trying cells: A1, A2, A3, B4, G6; Entire board attacked by queens: No
+   339) -----Trying cells: A1, A2, A3, B4, G7; Entire board attacked by queens: No
+   340) ----Trying cells: A1, A2, A3, B5, G7; Entire board attacked by queens: No
+   341) -----Trying cells: A1, A2, A3, B5, B6; Entire board attacked by queens: No
+   342) -----Trying cells: A1, A2, A3, B5, B7; Entire board attacked by queens: No
+   343) -----Trying cells: A1, A2, A3, B5, C1; Entire board attacked by queens: No
+   344) -----Trying cells: A1, A2, A3, B5, C2; Entire board attacked by queens: No
+   345) -----Trying cells: A1, A2, A3, B5, C3; Entire board attacked by queens: No
+   346) -----Trying cells: A1, A2, A3, B5, C4; Entire board attacked by queens: No
+   347) -----Trying cells: A1, A2, A3, B5, C5; Entire board attacked by queens: No
+   348) -----Trying cells: A1, A2, A3, B5, C6; Entire board attacked by queens: No
+   349) -----Trying cells: A1, A2, A3, B5, C7; Entire board attacked by queens: No
+   350) -----Trying cells: A1, A2, A3, B5, D1; Entire board attacked by queens: No
+   351) -----Trying cells: A1, A2, A3, B5, D2; Entire board attacked by queens: No
+   352) -----Trying cells: A1, A2, A3, B5, D3; Entire board attacked by queens: No
+   353) -----Trying cells: A1, A2, A3, B5, D4; Entire board attacked by queens: No
+   354) -----Trying cells: A1, A2, A3, B5, D5; Entire board attacked by queens: No
+   355) -----Trying cells: A1, A2, A3, B5, D6; Entire board attacked by queens: No
+   356) -----Trying cells: A1, A2, A3, B5, D7; Entire board attacked by queens: No
+   357) -----Trying cells: A1, A2, A3, B5, E1; Entire board attacked by queens: No
+   358) -----Trying cells: A1, A2, A3, B5, E2; Entire board attacked by queens: No
+   359) -----Trying cells: A1, A2, A3, B5, E3; Entire board attacked by queens: No
+   360) -----Trying cells: A1, A2, A3, B5, E4; Entire board attacked by queens: No
+   361) -----Trying cells: A1, A2, A3, B5, E5; Entire board attacked by queens: No
+   362) -----Trying cells: A1, A2, A3, B5, E6; Entire board attacked by queens: No
+   363) -----Trying cells: A1, A2, A3, B5, E7; Entire board attacked by queens: No
+   364) -----Trying cells: A1, A2, A3, B5, F1; Entire board attacked by queens: No
+   365) -----Trying cells: A1, A2, A3, B5, F2; Entire board attacked by queens: No
+   366) -----Trying cells: A1, A2, A3, B5, F3; Entire board attacked by queens: No
+   367) -----Trying cells: A1, A2, A3, B5, F4; Entire board attacked by queens: No
+   368) -----Trying cells: A1, A2, A3, B5, F5; Entire board attacked by queens: No
+   369) -----Trying cells: A1, A2, A3, B5, F6; Entire board attacked by queens: No
+   370) -----Trying cells: A1, A2, A3, B5, F7; Entire board attacked by queens: No
+   371) -----Trying cells: A1, A2, A3, B5, G1; Entire board attacked by queens: No
+   372) -----Trying cells: A1, A2, A3, B5, G2; Entire board attacked by queens: No
+   373) -----Trying cells: A1, A2, A3, B5, G3; Entire board attacked by queens: No
+   374) -----Trying cells: A1, A2, A3, B5, G4; Entire board attacked by queens: No
+   375) -----Trying cells: A1, A2, A3, B5, G5; Entire board attacked by queens: No
+   376) -----Trying cells: A1, A2, A3, B5, G6; Entire board attacked by queens: No
+   377) -----Trying cells: A1, A2, A3, B5, G7; Entire board attacked by queens: No
+   378) ----Trying cells: A1, A2, A3, B6, G7; Entire board attacked by queens: No
+   379) -----Trying cells: A1, A2, A3, B6, B7; Entire board attacked by queens: No
+   380) -----Trying cells: A1, A2, A3, B6, C1; Entire board attacked by queens: No
+   381) -----Trying cells: A1, A2, A3, B6, C2; Entire board attacked by queens: No
+   382) -----Trying cells: A1, A2, A3, B6, C3; Entire board attacked by queens: No
+   383) -----Trying cells: A1, A2, A3, B6, C4; Entire board attacked by queens: No
+   384) -----Trying cells: A1, A2, A3, B6, C5; Entire board attacked by queens: No
+   385) -----Trying cells: A1, A2, A3, B6, C6; Entire board attacked by queens: No
+   386) -----Trying cells: A1, A2, A3, B6, C7; Entire board attacked by queens: No
+   387) -----Trying cells: A1, A2, A3, B6, D1; Entire board attacked by queens: No
+   388) -----Trying cells: A1, A2, A3, B6, D2; Entire board attacked by queens: No
+   389) -----Trying cells: A1, A2, A3, B6, D3; Entire board attacked by queens: No
+   390) -----Trying cells: A1, A2, A3, B6, D4; Entire board attacked by queens: No
+   391) -----Trying cells: A1, A2, A3, B6, D5; Entire board attacked by queens: No
+   392) -----Trying cells: A1, A2, A3, B6, D6; Entire board attacked by queens: No
+   393) -----Trying cells: A1, A2, A3, B6, D7; Entire board attacked by queens: No
+   394) -----Trying cells: A1, A2, A3, B6, E1; Entire board attacked by queens: No
+   395) -----Trying cells: A1, A2, A3, B6, E2; Entire board attacked by queens: No
+   396) -----Trying cells: A1, A2, A3, B6, E3; Entire board attacked by queens: No
+   397) -----Trying cells: A1, A2, A3, B6, E4; Entire board attacked by queens: No
+   398) -----Trying cells: A1, A2, A3, B6, E5; Entire board attacked by queens: No
+   399) -----Trying cells: A1, A2, A3, B6, E6; Entire board attacked by queens: No
+   400) -----Trying cells: A1, A2, A3, B6, E7; Entire board attacked by queens: No
+   401) -----Trying cells: A1, A2, A3, B6, F1; Entire board attacked by queens: No
+   402) -----Trying cells: A1, A2, A3, B6, F2; Entire board attacked by queens: No
+   403) -----Trying cells: A1, A2, A3, B6, F3; Entire board attacked by queens: No
+   404) -----Trying cells: A1, A2, A3, B6, F4; Entire board attacked by queens: No
+   405) -----Trying cells: A1, A2, A3, B6, F5; Entire board attacked by queens: Yes
+
+THIRD PART. Results
+Solution found: A1, A2, A3, B6, F5
+
+Amount of iterations: 405.
+
+First solution found for a 7x7 board:
+  -----------------------------
+A | Q1 | Q2 | Q3 |   |   |   |   | 
+  -----------------------------
+B |   |   |   |   |   | Q4 |   | 
+  -----------------------------
+C |   |   |   |   |   |   |   | 
+  -----------------------------
+D |   |   |   |   |   |   |   | 
+  -----------------------------
+E |   |   |   |   |   |   |   | 
+  -----------------------------
+F |   |   |   |   | Q5 |   |   | 
+  -----------------------------
+G |   |   |   |   |   |   |   | 
+  -----------------------------
+    1   2   3   4   5   6   7   
+
