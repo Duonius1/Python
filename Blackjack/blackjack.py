@@ -45,6 +45,13 @@ def Bust_Check(hand, ace, temp, hit_stand_phase, person, person2, end):
             hit_stand_phase = False
         elif hand + temp > 21:
             hand += temp  # Adding to check later if Player_Hand < 21 so we skip dealer Hit/Stand phase if not needed
+            if end == "win!":
+                person = " and"
+                global wins
+                wins += 1
+            else:
+                global losses
+                losses += 1
             print(f"{person} busted with {hand}! {person2} {end}", end = "")
             hit_stand_phase = False
         else:
@@ -57,6 +64,7 @@ GameRunning = True
 round_index = int(1)
 Cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10] # Ace (1 or 11), 2-10, Jack, Queen, King
 Card_tens = ["10", "Jack", "Queen", "King"]
+wins = losses = ties = int(0)
 # Introduction to game
 print(logo)
 print("""Welcome to blackjack!
@@ -67,17 +75,13 @@ If a player’s hand exceeds 21, they “bust” and lose the game. If the deale
 If neither the player nor the dealer busts, the player with the highest hand value wins.
 """)
 while GameRunning:
+    print(f"Wins/Losses/Ties: {wins}/{losses}/{ties}")
     print(f"Round {round_index} of blackjack")
 
     #Resetting variables for next round as well as setting them up for the first.
-    Dealer_Hand = int(0)
-    Dealer_Temp = int(0)
-    Dealer_Ace = int(0)
-    Player_Hand = int(0)
-    Player_Temp = int(0)
-    Player_Ace = int(0)
-    Hit_Stand_Phase = True
-    Second_Dealer_Card = True
+    Dealer_Hand = Dealer_Temp = Dealer_Ace = int(0)
+    Player_Hand = Player_Temp = Player_Ace = int(0)
+    Hit_Stand_Phase = Second_Dealer_Card = True
 
     # Dealer gets his first 2 cards with 1 hidden card stored in Dealer_Temp
     Dealer_Temp, Dealer_Ace = Card_Pull_Message(Dealer_Ace, "The dealer", "shows", " + a hidden card.\n")
@@ -130,10 +134,13 @@ while GameRunning:
                         print(f"The dealer wins with a blackjack ({Dealer_Hand})! You had {Player_Hand}!")
                     else:
                         print(f"The dealer wins with a hand of {Dealer_Hand}, you had {Player_Hand}!")
+                    losses += 1
                 elif Dealer_Hand < Player_Hand:
                     print(f"You win with a hand of {Player_Hand}, congratulations! The dealer had {Dealer_Hand}!")
+                    wins += 1
                 else:
                     print(f"It's a tie! Both you and the dealer had a hand of {Dealer_Hand}!")
+                    ties += 1
                 Hit_Stand_Phase = False
     sleep(3.5)
     print("\n" * 20)
