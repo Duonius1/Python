@@ -1,7 +1,6 @@
 from time import sleep
 import random
 
-#TODO - Add a way to keep track of wins/losses.
 #TODO - Add a way to keep track of the player's money / create bet system.
 #TODO - Add splits and double downs.
 #TODO - Mayhaps a GUI?
@@ -31,7 +30,7 @@ def Card_Pull_Message(ace, person, stage, end): # Stage is show/pulled cards, pe
             print(f"{person} {stage} a {temp}{end}", end = "")
     return temp, ace
 
-def Bust_Check(hand, ace, temp, hit_stand_phase, person, person2, end):
+def Bust_Check(wallet, bet, hand, ace, temp, hit_stand_phase, person, person2, end):
         if hand + temp > 21 and ace > 0:
             hand = hand - 10 + temp
             ace -= 1
@@ -49,22 +48,27 @@ def Bust_Check(hand, ace, temp, hit_stand_phase, person, person2, end):
                 person = " and"
                 global wins
                 wins += 1
+                wallet += bet
             else:
                 global losses
                 losses += 1
+                wallet -= bet
             print(f"{person} busted with {hand}! {person2} {end}", end = "")
             hit_stand_phase = False
         else:
             hand += temp
         if end == "win!" and hand < 22:
             print(f", now has {hand}.")
-        return hand, ace, hit_stand_phase
+        return wallet, hand, ace, hit_stand_phase
+
 #Important parameters for the game
 GameRunning = True
+Valid_Bet = False
 round_index = int(1)
 Cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10] # Ace (1 or 11), 2-10, Jack, Queen, King
 Card_tens = ["10", "Jack", "Queen", "King"]
 wins = losses = ties = int(0)
+
 # Introduction to game
 print(logo)
 print("""Welcome to blackjack!
@@ -75,13 +79,21 @@ If a player’s hand exceeds 21, they “bust” and lose the game. If the deale
 If neither the player nor the dealer busts, the player with the highest hand value wins.
 """)
 while GameRunning:
-    print(f"Wins/Losses/Ties: {wins}/{losses}/{ties}")
-    print(f"Round {round_index} of blackjack")
-
-    #Resetting variables for next round as well as setting them up for the first.
+    # Resetting variables for next round as well as setting them up for the first.
     Dealer_Hand = Dealer_Temp = Dealer_Ace = int(0)
     Player_Hand = Player_Temp = Player_Ace = int(0)
     Hit_Stand_Phase = Second_Dealer_Card = True
+    Valid_Bet = False
+
+    Wallet = int(input("What is your budget for playing blackjack? "))
+    print(f"\nWins/Losses/Ties: {wins}/{losses}/{ties}")
+    print(f"Round {round_index} of blackjack")
+    Bet = int(input("How much would you like to bet? "))
+    while not Valid_Bet:
+        if Bet <= Wallet:
+            Valid_Bet = True
+        else:
+            Bet = int(input("You don't have enough money to bet that much! Try again: "))
 
     # Dealer gets his first 2 cards with 1 hidden card stored in Dealer_Temp
     Dealer_Temp, Dealer_Ace = Card_Pull_Message(Dealer_Ace, "The dealer", "shows", " + a hidden card.\n")
@@ -108,7 +120,7 @@ while GameRunning:
             Hit_or_Stand = input()
             if Hit_or_Stand.lower() == "h":
                 Player_Temp, Player_Ace = Card_Pull_Message(Player_Ace,"You", "pulled", "!\n")
-                Player_Hand, Player_Ace, Hit_Stand_Phase = Bust_Check(Player_Hand, Player_Ace, Player_Temp, Hit_Stand_Phase, "You", "The dealer", "wins!")
+                Wallet, Player_Hand, Player_Ace, Hit_Stand_Phase = Bust_Check(Wallet, Bet, Player_Hand, Player_Ace, Player_Temp, Hit_Stand_Phase, "You", "The dealer", "wins!")
             elif Hit_or_Stand.lower() == "s":
                 print("") # Gap between player's stand and dealer's hit/stand phase
                 Hit_Stand_Phase = False
@@ -126,7 +138,7 @@ while GameRunning:
                 stage = "shows" if Second_Dealer_Card else "pulled"
                 Dealer_Temp, Dealer_Ace = Card_Pull_Message(Dealer_Ace, "The dealer", stage, "")
                 Second_Dealer_Card = False  # To prevent the dealer from "showing" the hidden card again
-                Dealer_Hand, Dealer_Ace, Hit_Stand_Phase = Bust_Check(Dealer_Hand, Dealer_Ace, Dealer_Temp, Hit_Stand_Phase, "The dealer", "You", "win!")
+                Wallet, Dealer_Hand, Dealer_Ace, Hit_Stand_Phase = Bust_Check(Wallet, Bet, Dealer_Hand, Dealer_Ace, Dealer_Temp, Hit_Stand_Phase, "The dealer", "You", "win!")
                 sleep (1)
             else:
                 if Dealer_Hand > Player_Hand:
@@ -135,9 +147,11 @@ while GameRunning:
                     else:
                         print(f"The dealer wins with a hand of {Dealer_Hand}, you had {Player_Hand}!")
                     losses += 1
+                    Wallet -= Bet
                 elif Dealer_Hand < Player_Hand:
                     print(f"You win with a hand of {Player_Hand}, congratulations! The dealer had {Dealer_Hand}!")
                     wins += 1
+                    Wallet += Bet
                 else:
                     print(f"It's a tie! Both you and the dealer had a hand of {Dealer_Hand}!")
                     ties += 1
