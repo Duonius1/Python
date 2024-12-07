@@ -1,11 +1,11 @@
 from time import sleep
 import random
 
-#TODO 1 - DONE
-#TODO 2 - Add a way to stop the game in another way other than terminating program
-#TODO 3 - Mark the initial two cards (If they get a jack and a queen (20), detect it and say it)
-#TODO 4 - Mayhaps a GUI?
-#TODO 5 - Fix the recurring functions for the dealer's hidden card and the player's hit/stand phase
+#TODO - Fix the "pulled a 8" when it's supposed to be "an 8" issue.
+#TODO - Fix the recurring functions for the dealer's hidden card and the player's hit/stand phase.
+#TODO - Add a way to keep track of wins/losses.
+#TODO - Add a way to keep track of the player's money / create bet system.
+#TODO - Mayhaps a GUI?
 
 logo = r"""
 .------.            _     _            _    _            _    
@@ -35,7 +35,7 @@ If neither the player nor the dealer busts, the player with the highest hand val
 while GameRunning:
     print(f"Round {round_index} of blackjack")
 
-    #Resetting variables for next round
+    #Resetting variables for next round as well as setting them up for the first.
     Dealer_Hand = int(0)
     Dealer_Temp = int(0)
     Dealer_Ace = int(0)
@@ -55,7 +55,7 @@ while GameRunning:
     else:
         print(f"The dealer shows a {Dealer_Temp} + a hidden card")
     Dealer_Hand += Dealer_Temp
-    Dealer_Temp = random.choice(Cards) # TODO 6 - DONE
+    Dealer_Temp = random.choice(Cards) # Hidden card
     print("")
     sleep(1)
 
@@ -82,7 +82,7 @@ while GameRunning:
             sleep(1)
             Hit_Stand_Phase = False
         else:
-            print(f"You have {Player_Hand}, type \"H\" to Hit or \"S\" to Stand ", end = "")
+            print(f"You have {Player_Hand}, type \"H\" to Hit or \"S\" to Stand, type \"Q\" if you no longer wish to play. ", end = "")
             Hit_or_Stand = input()
             if Hit_or_Stand.lower() == "h":
                 Player_Temp = random.choice(Cards)
@@ -113,6 +113,9 @@ while GameRunning:
             elif Hit_or_Stand.lower() == "s":
                 print("") # Gap between player's stand and dealer's hit/stand phase
                 Hit_Stand_Phase = False
+            elif Hit_or_Stand.lower() == "q":
+                print("Quitting game...")
+                exit()
             else:
                 print("Invalid input, try again!")
 
