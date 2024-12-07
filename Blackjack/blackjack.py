@@ -1,8 +1,7 @@
 from time import sleep
 import random
 
-#TODO - Fix the "pulled a 8" when it's supposed to be "an 8" issue.
-#TODO - Fix the recurring functions for the dealer's hidden card and the player's hit/stand phase.
+#TODO - Fix the recurring functions for the dealer's hidden card and the player's hit/stand phase. (Partially fixed)
 #TODO - Add a way to keep track of wins/losses.
 #TODO - Add a way to keep track of the player's money / create bet system.
 #TODO - Mayhaps a GUI?
@@ -17,6 +16,17 @@ logo = r"""
       |  \/ K|                            _/ |                
       `------'                           |__/           
 """
+
+def Card_Pull_Message(Card, person, stage, end): # Stage is show/pulled cards, person is for dealer/player
+    if Card == 11:
+        print(f"{person} {stage} an Ace{end}", end = "")
+    elif Card == 10:
+        print(f"{person} {stage} a {random.choice(Card_tens)}{end}", end = "")
+    else:
+        if Card == 8:
+            print(f"{person} {stage} an {Card}{end}", end = "")
+        else:
+            print(f"{person} {stage} a {Card}{end}", end = "")
 
 #Important parameters for the game
 GameRunning = True
@@ -47,13 +57,9 @@ while GameRunning:
 
     # Dealer gets his first 2 cards with 1 hidden card stored in Dealer_Temp
     Dealer_Temp = random.choice(Cards)
-    if Dealer_Temp == 11: # Check to see if the card is an Ace.
-        print("The dealer shows an Ace + a hidden card")
-        Dealer_Ace += 1 # Add to ace counter to remove later if needed.
-    elif Dealer_Temp == 10:
-        print(f"The Dealer shows a {random.choice(Card_tens)} + a hidden card")
-    else:
-        print(f"The dealer shows a {Dealer_Temp} + a hidden card")
+    if Dealer_Temp == 11:
+        Dealer_Ace += 1
+    Card_Pull_Message(Dealer_Temp, "The dealer", "shows", "+ a hidden card.")
     Dealer_Hand += Dealer_Temp
     Dealer_Temp = random.choice(Cards) # Hidden card
     print("")
@@ -62,13 +68,9 @@ while GameRunning:
     # Give player's initial 2 cards.
     for i in range (0,2):
         Player_Temp = random.choice(Cards)
+        Card_Pull_Message(Player_Temp, "You", "pulled", "!")
         if Player_Temp == 11:
-            print("You pulled an Ace!")
             Player_Ace += 1
-        elif Player_Temp == 10:
-            print(f"You pulled a {random.choice(Card_tens)}!")
-        else:
-            print(f"You pulled a {Player_Temp}!")
         Player_Hand += int(Player_Temp)
         sleep(1)
 
@@ -86,13 +88,11 @@ while GameRunning:
             Hit_or_Stand = input()
             if Hit_or_Stand.lower() == "h":
                 Player_Temp = random.choice(Cards)
+                Card_Pull_Message(Player_Temp, "You", "pulled", "!")
+
                 if Player_Temp == 11:
-                    print("You pulled an Ace!")
                     Player_Ace += 1
-                elif Player_Temp == 10:
-                    print(f"You pulled a {random.choice(Card_tens)}!")
-                else:
-                    print(f"You pulled a {Player_Temp}!")
+
                 if Player_Hand + Player_Temp > 21 and Player_Ace > 0:
                     Player_Hand = Player_Hand - 10 + Player_Temp
                     Player_Ace -= 1
@@ -125,22 +125,14 @@ while GameRunning:
         while Hit_Stand_Phase:
             if Dealer_Hand < 17:
                 if Second_Dealer_Card:
-                    if Dealer_Temp == 11:
-                        print(f"The dealer shows an Ace", end="")
-                        Dealer_Ace += 1
-                    elif Dealer_Temp == 10:
-                        print(f"The dealer shows a {random.choice(Card_tens)}", end="")
-                    else:
-                        print(f"The dealer shows a {Dealer_Temp}", end="")
+                    Card_Pull_Message(Player_Temp, "The dealer", "shows", "!")
                     Second_Dealer_Card = False  # To prevent the dealer from showing the hidden card again
                 else:
-                    if Dealer_Temp == 11:
-                        print(f"The dealer pulls an Ace", end = "")
-                        Dealer_Ace += 1
-                    elif Dealer_Temp == 10:
-                        print(f"The dealer pulls a {random.choice(Card_tens)}", end = "")
-                    else:
-                        print(f"The dealer pulls a {Dealer_Temp}", end="")
+                    Card_Pull_Message(Player_Temp, "The dealer", "pulled", "!")
+
+                if Dealer_Temp == 11:
+                    Dealer_Ace += 1
+
                 if Dealer_Hand + Dealer_Temp > 21 and Dealer_Ace > 0:
                     Dealer_Hand = Dealer_Hand - 10 + Dealer_Temp
                     Dealer_Ace -= 1
@@ -155,6 +147,7 @@ while GameRunning:
                     Hit_Stand_Phase = False
                 else:
                     Dealer_Hand += Dealer_Temp
+
                 if Dealer_Hand < 22:
                     print(f", now has {Dealer_Hand}")
                 Dealer_Temp = random.choice(Cards)
