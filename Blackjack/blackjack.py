@@ -3,6 +3,9 @@ import random
 
 #TODO - Add splits and double downs.
 #TODO - Mayhaps a GUI? not a very graphic interface, but there technically is one?
+#TODO - Add a way to change the amount of decks used in the game like most online casinos.
+#TODO - Add a way to change the amount of players/bets in the game (After splits)
+#TODO - Add side bets like insurance, 21+3, etc.
 
 logo = r"""
 .------.            _     _            _    _            _    
