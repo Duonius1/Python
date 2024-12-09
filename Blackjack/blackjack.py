@@ -1,7 +1,7 @@
 from time import sleep
 import random
 
-#TODO - Add splits and double downs.
+#TODO - Add splits. This is a big one, but it's a big part of blackjack.
 #TODO - Mayhaps a GUI? not a very graphic interface, but there technically is one?
 #TODO - Add a way to change the amount of decks used in the game like most online casinos.
 #TODO - Add a way to change the amount of players/bets in the game (After splits)
@@ -64,7 +64,7 @@ def bust_check(hand, ace, temp, hit_stand_phase, person):
         print(f", now has {hand}.")
     return hand, ace, hit_stand_phase
 
-def menu(bet, timer):
+def menu(double_down, bet, timer):
     while True: # As long as you don't quit from menu
         menu_option = input("""
 ==== MENU ==== 
@@ -82,26 +82,34 @@ Quit the game ("Quit")
         elif menu_option == "wallet":
             print(f"Your current balance is ${Wallet}")
         elif menu_option == "options":
-            bet, timer = options(bet, timer)
+            double_down, bet, timer = options(double_down, bet, timer)
         else:
             print("Invalid input, try again!")
-    return bet, timer
+    return double_down, bet, timer
 
-def options(bet, timer):
+def options(double_down, bet, timer):
     while True: # As long as you don't quit from options
         option = input("""
 ==== OPTIONS ====
-Turn on bets ("On")
-Turn off bets ("Off")
+Turn on bets ("B On")
+Turn off bets ("B Off")
+Turn on double downs ("D On")
+Turn off double downs ("D Off")
 Change wait time between rounds ("Time")
 Return to menu ("Menu")
 >""").lower()
-        if option == "on":
+        if option == "b on":
             bet = True
             print("Bets are now on.")
-        elif option == "off":
+        elif option == "b off":
             bet = False
             print("Bets are now off.")
+        elif option == "d on":
+            double_down = True
+            print("Double downs are now on.")
+        elif option == "d off":
+            double_down = False
+            print("Double downs are now off.")
         elif option == "time":
              timer = float(input("How many seconds would you like to wait between rounds? "))
              print(f"Wait time between rounds is now {timer} seconds.")
@@ -109,12 +117,13 @@ Return to menu ("Menu")
             break
         else:
             print("Invalid input, try again!")
-    return bet, timer
+    return double_down, bet, timer
 
 #Important parameters for the game
-sleep_timer = float(3.5)
+Sleep_Timer = float(3.5)
 GameRunning = True
 Bets_On = True
+Double_Down_On = True
 round_index = int(1)
 Cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10] # Ace (1 or 11), 2-10, Jack, Queen, King
 Card_tens = ["10", "Jack", "Queen", "King"]
@@ -131,7 +140,8 @@ If neither the player nor the dealer busts, the player with the highest hand val
 """)
 Wallet = float(number_validation("What is your budget for playing blackjack? $"))
 if Wallet == 0:
-    Bets_On = False
+    Bets_On = False # Determines whether bets are on or off
+    Double_Down_On = False # Determines whether double downs are on or off
 
 while GameRunning:
     # Resetting variables for next round as well as setting them up for the first.
@@ -140,6 +150,7 @@ while GameRunning:
     Hit_Stand_Phase = Second_Dealer_Card = True
     Valid_Bet = False
     Bet = int(0)
+    Double_Down = True if Double_Down_On else False
 
     print(f"\nWins/Losses/Ties: {wins}/{losses}/{ties}")
     print(f"Round {round_index} of blackjack")
@@ -148,6 +159,7 @@ while GameRunning:
         while Bet > Wallet:
             print("You can't bet more than you have!")
             Bet = float(number_validation("How much would you like to bet? $"))
+    Double_Down = False if Bet == 0 else True # If no bet, pointless to double down
 
     print("")
 
@@ -169,16 +181,26 @@ while GameRunning:
         if Player_Hand == 21:
             print(f"You got a blackjack! ({Player_Hand})\n")
             break
-        print(f"You have {Player_Hand}, type \"H\" to Hit or \"S\" to Stand, type \"M\" for menu. >", end = "")
+        if Double_Down:
+            print(f"You have {Player_Hand}, type \"H\" to Hit, \"S\" to Stand, \"D\" to double down. Type \"M\" for menu. >", end = "")
+        else:
+            print(f"You have {Player_Hand}, type \"H\" to Hit, \"S\" to Stand. Type \"M\" for menu. >", end = "")
         Hit_or_Stand = input()
         if Hit_or_Stand.lower() == "h":
             Player_Temp, Player_Ace = card_pull_message(Player_Ace,"You", "pulled", "!\n")
             Player_Hand, Player_Ace, Hit_Stand_Phase = bust_check(Player_Hand, Player_Ace, Player_Temp, Hit_Stand_Phase, "You")
+            Double_Down = False
         elif Hit_or_Stand.lower() == "s":
             print("") # Gap between player's stand and dealer's hit/stand phase
             Hit_Stand_Phase = False
         elif Hit_or_Stand.lower() == "m":
-            Bets_On, sleep_timer = menu(Bets_On, sleep_timer)
+            Double_Down_On, Bets_On, Sleep_Timer = menu(Double_Down_On, Bets_On, Sleep_Timer)
+            Double_Down = True if Double_Down_On else False # To change the printed text
+        elif Hit_or_Stand.lower() == "d" and Double_Down:
+            if Bets_On:
+                Bet *= 2
+                print(f"You have doubled down to ${Bet}!")
+                Double_Down = False
         else:
             print("Invalid input, try again!")
         if Player_Hand > 21:
@@ -221,7 +243,7 @@ while GameRunning:
             print("You win!")
             wins += 1
             Wallet += Bet
-    sleep(sleep_timer)
+    sleep(Sleep_Timer)
     print("\n" * 20)
     round_index += 1 # To keep track of round
 
