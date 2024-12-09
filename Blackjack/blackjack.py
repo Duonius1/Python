@@ -50,7 +50,7 @@ def bust_check(hand, ace, temp, hit_stand_phase, person):
         ace -= 1
     elif hand + temp == 21:
         hand += temp
-        person = "\nThe dealer" if person == "The dealer" else person
+        person = "\nThe dealer" if person == "The dealer" else person # Needed for proper blackjack message because of the ", now has {hand}." message
         print(f"{person} got a blackjack! ({hand})\n")
         hit_stand_phase = False
     elif hand + temp > 21:
@@ -65,8 +65,7 @@ def bust_check(hand, ace, temp, hit_stand_phase, person):
     return hand, ace, hit_stand_phase
 
 def menu(bet, timer):
-    menu_active = True
-    while menu_active:
+    while True: # As long as you don't quit from menu
         menu_option = input("""
 ==== MENU ==== 
 Resume play ("Play")
@@ -75,7 +74,7 @@ Check wallet balance ("Wallet")
 Quit the game ("Quit")
 >""").lower()
         if menu_option == "play":
-            menu_active = False
+            break
         elif menu_option == "quit":
             print("Thanks for playing!")
             print("Quitting game...")
@@ -89,7 +88,7 @@ Quit the game ("Quit")
     return bet, timer
 
 def options(bet, timer):
-    while True:
+    while True: # As long as you don't quit from options
         option = input("""
 ==== OPTIONS ====
 Turn on bets ("On")
