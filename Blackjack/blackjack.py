@@ -34,13 +34,15 @@ def card_pull_message(ace, person, pull_show, end): # Stage is show/pulled cards
         print(f"{person} {pull_show} an Ace{end}", end = "")
         ace += 1
     elif temp == 10:
-        print(f"{person} {pull_show} a {random.choice(Card_tens)}{end}", end = "")
+        temp_face = random.choice(Card_tens)
+        print(f"{person} {pull_show} a {temp_face}{end}", end = "")
+        return temp_face, temp, ace
     else:
         if temp == 8:
             print(f"{person} {pull_show} an {temp}{end}", end = "")
         else:
             print(f"{person} {pull_show} a {temp}{end}", end = "")
-    return temp, ace
+    return "noface", temp, ace
 
 def bust_check(hand, ace, temp, hit_stand_phase, person):
     if hand + temp > 21 and ace > 0:
@@ -51,18 +53,18 @@ def bust_check(hand, ace, temp, hit_stand_phase, person):
         ace -= 1
     elif hand + temp == 21:
         hand += temp
+        print(f"{person} got a blackjack ({hand})")
         hit_stand_phase = False
     elif hand + temp > 21:
         hand += temp  # Adding to check later if Player_Hand < 21 so we skip dealer Hit/Stand phase if not needed
         hit_stand_phase = False
     else:
         hand += temp
-    if person == "The dealer":
+    if person == "The dealer" and hand != 21:
         print(f", now has {hand}.")
     return hand, ace, hit_stand_phase
-#TODO=============================================================================================================
 
-def menu(double_down, bet, timer):
+def menu(splits, double_down, bet, timer):
     while True: # As long as you don't quit from menu
         menu_option = input("""
 ==== MENU ==== 
@@ -80,12 +82,12 @@ Quit the game ("Quit")
         elif menu_option == "wallet":
             print(f"Your current balance is ${Wallet}")
         elif menu_option == "options":
-            double_down, bet, timer = options(double_down, bet, timer)
+            splits, double_down, bet, timer = options(splits, double_down, bet, timer)
         else:
             print("Invalid input, try again!")
-    return double_down, bet, timer
+    return splits, double_down, bet, timer
 
-def options(double_down, bet, timer):
+def options(splits, double_down, bet, timer):
     while True: # As long as you don't quit from options
         option = input("""
 ==== OPTIONS ====
@@ -93,6 +95,8 @@ Turn on bets ("B On")
 Turn off bets ("B Off")
 Turn on double downs ("D On")
 Turn off double downs ("D Off")
+Turn on splits ("S On")
+Turn off splits ("S Off")
 Change wait time between rounds ("Time")
 Return to menu ("Menu")
 >""").lower()
@@ -108,6 +112,12 @@ Return to menu ("Menu")
         elif option == "d off":
             double_down = False
             print("Double downs are now off.")
+        elif option == "s on":
+            splits = True
+            print("Splits are now on.")
+        elif option == "s off":
+            splits = False
+            print("Splits are now off")
         elif option == "time":
              timer = float(input("How many seconds would you like to wait between rounds? "))
              print(f"Wait time between rounds is now {timer} seconds.")
@@ -115,9 +125,8 @@ Return to menu ("Menu")
             break
         else:
             print("Invalid input, try again!")
-    return double_down, bet, timer
+    return splits, double_down, bet, timer
 
-# TODO=============================================================================================================
 #Important parameters for the game
 Sleep_Timer = float(3.5)
 GameRunning = True
@@ -139,6 +148,10 @@ If a player’s hand exceeds 21, they “bust” and lose the game. If the deale
 If neither the player nor the dealer busts, the player with the highest hand value wins.
 """)
 Wallet = float(number_validation("What is your budget for playing blackjack? $"))
+while Wallet < 0:
+    print("You can't have a negative budget!")
+    Wallet = float(number_validation("What is your budget for playing blackjack? $"))
+Temp_Wallet = float(Wallet)
 if Wallet == 0:
     Bets_On = False # Determines whether bets are on or off
     Double_Down_On = False # Determines whether double downs are on or off
@@ -147,90 +160,116 @@ while GameRunning:
     # Resetting variables for next round as well as setting them up for the first.
     Dealer_Hand = Dealer_Temp = Dealer_Ace = int(0)
     Player_Hand = Player_Temp = Player_Ace = int(0)
-    Bet = Split_Card = iteration = int(0)
+    Bet = Split_Card = iteration = Split_Ace = int(0)
     split_number = int(0)
     Results = []
     Bets = []
     Hit_Stand_Phase = Second_Dealer_Card = True
     Valid_Bet = Split_Check = False
     Double_Down = True if Double_Down_On else False
-    turn_one_option_text = text_if_bet = ""
+    turn_one_option_text = text_if_bet = Card_Face = Previous_Face = Hit_or_Stand = ""
     print(f"\nWins/Losses/Ties: {wins}/{losses}/{ties}")
     print(f"Round {round_index} of blackjack")
     if Bets_On:
+
         Bet = float(number_validation("How much would you like to bet? $"))
-        while Bet > Wallet:
-            print("You can't bet more than you have!")
-            Bet = float(number_validation("How much would you like to bet? $"))
-    Bets.append(Bet)
+        while Bet > Wallet or Bet < 0:
+            if Bet > Wallet:
+                print("You can't bet more than you have!")
+                Bet = float(number_validation("How much would you like to bet? $"))
+            else:
+                print("You can't bet a negative amount!")
+                Bet = float(number_validation("How much would you like to bet? $"))
+    if Bet != 0:
+        Bets.append(Bet)
+        Wallet -= Bet
     Double_Down = False if Bet == 0 else True # If no bet, pointless to double down
 
     print("")
 
     # Dealer gets his first 2 cards with 1 hidden card stored in Dealer_Temp
-    Dealer_Temp, Dealer_Ace = card_pull_message(Dealer_Ace, "The dealer", "shows", " + a hidden card.\n")
+    Card_Face, Dealer_Temp, Dealer_Ace = card_pull_message(Dealer_Ace, "The dealer", "shows", " + a hidden card.\n") # Card_Face does nothing for the dealer
     Dealer_Hand += Dealer_Temp
     print("")
     sleep(1)
 
     # Give player's initial 2 cards.
     for i in range (0,2):
-        Player_Temp, Player_Ace = card_pull_message(Player_Ace, "You", "pulled", "!\n")
-        Player_Hand += int(Player_Temp)
+        Card_Face, Player_Temp, Player_Ace = card_pull_message(Player_Ace, "You", "pulled", "!\n")
+        Player_Hand, Player_Ace, Hit_Stand_Phase = bust_check(Player_Hand, Player_Ace, Player_Temp, Hit_Stand_Phase, "You")
+        if Player_Hand == 21:
+            print(f"You got a blackjack! ({Player_Hand})\n", end = "")
         sleep(1)
         if Splits_On:
-            Split_Check = True if Player_Temp * 2 == Player_Hand else False # Check if eligible for split
+            Split_Check = True if Previous_Face == Card_Face and Player_Temp * 2 == Player_Hand else False # Check if eligible for split
+            Split_Check = True if Previous_Face == Card_Face and Player_Temp == 11 and Player_Hand == 12 else Split_Check # Separate check for 2 aces
+        Previous_Face = Card_Face
 
     print("") # Gap between Dealer's cards and Player's Hit/Stand phase
 
     while iteration <= split_number: # Nested loops exist solely for ability to handle infinite number of splits
         while Hit_Stand_Phase:
-            if Player_Hand == 21:
-                print("You got a blackjack! (21)\n")
-                break
-            if Split_Check and Double_Down:
+            if Split_Check and Double_Down and Bets_On and Wallet >= Bet:
                 turn_one_option_text = ", \"/S\" to Split or \"D\" to Double Down"
             elif Split_Check:
                 turn_one_option_text = ", \"/S\" to  Split"
-            elif Double_Down:
+            elif Double_Down and Bets_On and Wallet >= Bet:
                 turn_one_option_text = ", \"D\" to Double Down"
             print(f"You have {Player_Hand}, type \"H\" to Hit, \"S\" to Stand{turn_one_option_text}. Type \"M\" for menu. >", end = "")
             Hit_or_Stand = input()
             if Hit_or_Stand.lower() == "h":
-                Player_Temp, Player_Ace = card_pull_message(Player_Ace,"You", "pulled", "!\n")
-                Player_Hand, Player_Ace, Hit_Stand_Phase = bust_check(Player_Hand, Player_Ace, Player_Temp, Hit_Stand_Phase, "You")
                 Double_Down = False
+                Card_Face, Player_Temp, Player_Ace = card_pull_message(Player_Ace,"You", "pulled", "!\n")
+                Player_Hand, Player_Ace, Hit_Stand_Phase = bust_check(Player_Hand, Player_Ace, Player_Temp, Hit_Stand_Phase, "You")
             elif Hit_or_Stand.lower() == "s":
                 print("") # Gap between player's stand and dealer's hit/stand phase
                 Hit_Stand_Phase = False
             elif Hit_or_Stand.lower() == "/s" and Split_Check:
                 split_number += 1
-                Player_Hand -= Player_Temp # Removing the second card
+                if Player_Temp != 11:
+                    Player_Hand -= Player_Temp # Removing the second card
+                else:
+                    Player_Hand -= 1 # Removing the second ace
+                    Split_Ace = 1
                 Split_Card = Player_Temp # Storing the second card for the split
                 Bets.append(Bet) # Adding the same bet to the split hand
-                Split_Check = False
-                print(f"Check 1, {Split_Check}")
+                Wallet -= Bet
+                Card_Face, Player_Temp, Player_Ace = card_pull_message(Player_Ace, "You", "pulled", "!\n")
+                Player_Hand, Player_Ace, Hit_Stand_Phase = bust_check(Player_Hand, Player_Ace, Player_Temp, Hit_Stand_Phase, "You")
+                Double_Down = True if Double_Down_On and Bet != 0 else False
+                if Splits_On:
+                    Split_Check = True if Previous_Face == Card_Face and (Split_Card * 2 == Player_Hand or (Split_Card == 11 and Player_Hand == 12))else False  # Check if eligible for split
+                else:
+                    Split_Check = False
             elif Hit_or_Stand.lower() == "m":
-                Double_Down_On, Bets_On, Sleep_Timer = menu(Double_Down_On, Bets_On, Sleep_Timer)
+                Splits_On, Double_Down_On, Bets_On, Sleep_Timer = menu(Splits_On, Double_Down_On, Bets_On, Sleep_Timer)
                 Double_Down = True if Double_Down_On else False # To change the printed text
             elif Hit_or_Stand.lower() == "d" and Double_Down:
-                Bets[iteration] += Bet
+                Bets[-(iteration+1)] += Bet # Goes backwards through the list to add the bet to the correct hand
                 print(f"You have doubled down to ${Bet * 2}!")
+                Wallet -= Bet
                 Double_Down = False
+                Split_Check = False
             else:
                 print("Invalid input, try again!")
-            print(f"Check 2, {Split_Check}")
             turn_one_option_text = ""
         iteration += 1
         Results.append(Player_Hand)
+        print(Results)
         if split_number > 0:
+            if Hit_or_Stand.lower() == "h" and Player_Hand == 21 and iteration >= split_number:
+                Card_Face, Player_Temp, Player_Ace = card_pull_message(Player_Ace, "You", "pulled", "!\n")
+                Split_Card, Player_Ace, Hit_Stand_Phase = bust_check(Split_Card, Player_Ace, Player_Temp, Hit_Stand_Phase, "You")
             Player_Hand = Split_Card
-            Player_Temp = Player_Ace = Split_Card = int(0)
+            Player_Temp = int(0)
+            if Split_Card == 11:
+                Player_Ace = Split_Ace
             Hit_Stand_Phase = True
             Split_Check = False
             Double_Down = True if Double_Down_On else False
-        print(f"Check 3, {Split_Check}")
-#TODO=============================================================================================================
+            if Hit_or_Stand.lower() == "s" and iteration >= split_number:
+                Card_Face, Player_Temp, Player_Ace = card_pull_message(Player_Ace, "You", "pulled", "!\n")
+                Player_Hand, Player_Ace, Hit_Stand_Phase = bust_check(Player_Hand, Player_Ace, Player_Temp, Hit_Stand_Phase, "You")
 
     Hit_Stand_Phase = True # Resetting hit stand phase for dealer's hit/stand phase or next turn.
     index = int(0)
@@ -238,7 +277,7 @@ while GameRunning:
         while Hit_Stand_Phase:
             if Dealer_Hand < 17:
                 stage = "shows" if Second_Dealer_Card else "pulled"
-                Dealer_Temp, Dealer_Ace = card_pull_message(Dealer_Ace, "The dealer", stage, "")
+                Card_Face, Dealer_Temp, Dealer_Ace = card_pull_message(Dealer_Ace, "The dealer", stage, "") # Card_Face does nothing for the dealer
                 Second_Dealer_Card = False  # To prevent the dealer from "showing" the hidden card again
                 Dealer_Hand, Dealer_Ace, Hit_Stand_Phase = bust_check(Dealer_Hand, Dealer_Ace, Dealer_Temp, Hit_Stand_Phase, "The dealer")
                 if Dealer_Hand == 21:
@@ -248,41 +287,40 @@ while GameRunning:
             else:
                 break
         for hand in Results:
+            sleep(0.5)
             if hand > 21: # You busted but dealer didn't (if I busted I lose anyway so I don't think this check is necessary
                 losses += 1
-                Wallet -= Bets[index]
+                text_if_bet = f". You lost ${Bets[-(index+1)]}" if Bets_On else text_if_bet
+                print(f"You busted with {hand} and you lost hand #{index + 1}{text_if_bet}!")
             elif Dealer_Hand > 21: # Dealer busted but you didn't
                 wins += 1
-                Wallet += Bets[index]
-                text_if_bet = f"${Bets[index]} in hand {index} with a hand of {hand}" if Bets_On else text_if_bet
+                Wallet += (Bets[-(index+1)] * 2)
+                text_if_bet = f". You won ${Bets[-(index+1)]}" if Bets_On else text_if_bet
                 print(f"The dealer busted with {Dealer_Hand} and you won hand #{index+1}{text_if_bet}!")
             elif Dealer_Hand > hand: # Dealer has higher hand and wins
                 losses += 1
-                Wallet -= Bets[index]
-                text_if_bet = f". You lost ${Bets[index]}" if Bets_On else text_if_bet
+                text_if_bet = f". You lost ${Bets[-(index+1)]}" if Bets_On else text_if_bet
                 if Dealer_Hand != 21:
                     print(f"The dealer won with {Dealer_Hand}, you had {hand} and lost hand #{index+1}{text_if_bet}!")
                 else:
                     print(f"The dealer won with a blackjack ({Dealer_Hand}), you had {hand} and lost hand #{index+1}{text_if_bet}!")
             elif hand > Dealer_Hand: # You have higher hand and win
                 wins += 1
-                Wallet += Bets[index]
-                text_if_bet = f". You won ${Bets[index]}" if Bets_On else text_if_bet
+                Wallet += (Bets[-(index+1)] * 2)
+                text_if_bet = f". You won ${Bets[-(index+1)]}" if Bets_On else text_if_bet
                 if hand != 21:
                     print(f"You won with {hand}, the dealer had {Dealer_Hand} and lost hand #{index+1}{text_if_bet}!")
                 else:
                     print(f"You won with a blackjack, the dealer had {Dealer_Hand} and lost hand #{index+1}{text_if_bet}!")
             else: # Tie
                 ties += 1
-                text_if_bet = f", keeping ${Bets[index]}" if Bets_On else text_if_bet
+                text_if_bet = f", keeping ${Bets[-(index+1)]}" if Bets_On else text_if_bet
+                Wallet += Bets[-(index+1)]
                 print(f"It's a tie! Both you and the dealer had a hand of {hand} in hand #{index+1}{text_if_bet}!")
             index += 1
-            sleep(0.5)
     else:
-        Temp_Wallet = float(Wallet)
         for hand in Results:
             losses += 1
-            Wallet -= Bets[index]
             index += 1
         text_if_bet = f". You lost {Temp_Wallet - Wallet}" if Bets_On else text_if_bet
         print(f"You busted on all hands and lost, the dealer wins{text_if_bet}!")
