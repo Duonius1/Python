@@ -1,7 +1,7 @@
 from time import sleep
 import random
 
-#TODO - Mayhaps a GUI? not a very graphic interface, but there technically is one?
+#TODO - Mayhaps a GUI? Currently only a TUI
 #TODO - Add a way to change the amount of decks used in the game like most online casinos. Honestly probably pointless to do?
 #TODO - Add a way to change the amount of players/bets in the game (After splits). This only depends on whether I decide to launch this game somewhere.
 
@@ -136,13 +136,9 @@ Return to menu ("Menu")
             print("Invalid input, try again!")
     return insurance, splits, double_down, bet, timer
 
-#Important parameters for the game
+#Important parameters for the game that can be changed in the options menu for the most part
 Sleep_Timer = float(3.5)
-GameRunning = True
-Bets_On = True
-Double_Down_On = True
-Splits_On = True
-Insurance_On = True
+GameRunning = Splits_On = Bets_On = Double_Down_On = Insurance_On = True
 round_index = int(1)
 Cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10] # Ace (1 or 11), 2-10, Jack, Queen, King
 Card_tens = ["10", "Jack", "Queen", "King"]
@@ -157,6 +153,7 @@ The dealer also receives two cards, but only one is face up.
 If a player’s hand exceeds 21, they “bust” and lose the game. If the dealer busts, all remaining players win. 
 If neither the player nor the dealer busts, the player with the highest hand value wins.
 """)
+
 Wallet = float(number_validation("What is your budget for playing blackjack? $"))
 while Wallet < 0:
     print("You can't have a negative budget!")
@@ -164,7 +161,8 @@ while Wallet < 0:
 if Wallet == 0:
     Bets_On = False # Determines whether bets are on or off
     Double_Down_On = False # Determines whether double downs are on or off
-Original_Wallet = Wallet
+
+Original_Wallet = Wallet # Used to keep track of winnings during entire game
 
 while GameRunning:
     # Resetting variables for next round as well as setting them up for the first.
@@ -173,20 +171,23 @@ while GameRunning:
     Bet = Split_Card = iteration = Split_Ace = int(0)
     split_number = int(0)
     Insurance_Bet = float(0)
-    Temp_Wallet = float(Wallet)
+    Temp_Wallet = float(Wallet) # Used to keep track of winnings during one hand
     Results = []
     Bets = []
-    Hit_Stand_Phase = Second_Dealer_Card = True
+    Hit_Stand_Phase = Second_Dealer_Card = True # Second_Dealer_Card is used to check for insurance bet as well as change show/pulled text in dealer's hit/stand phase
     Valid_Bet = Split_Check = False
     Double_Down = True if Double_Down_On else False
     turn_one_option_text = text_if_bet = Card_Face = Previous_Face = Hit_or_Stand = ""
+
+    # Initial game stats
     print(f"\nWins/Losses/Ties: {wins}/{losses}/{ties}")
     if Bets_On:
         print(f"Current balance: ${Wallet}")
         minus_plus_sign = "-" if Wallet < Original_Wallet else "+"
-        minus_plus_wallet = Original_Wallet - Wallet if Wallet < Original_Wallet else Wallet - Original_Wallet
+        minus_plus_wallet = Original_Wallet - Wallet if Wallet < Original_Wallet else Wallet - Original_Wallet # To avoid getting a negative number after the $ sign
         print(f"Current winnings: {minus_plus_sign}${minus_plus_wallet}")
     print(f"Round {round_index} of blackjack")
+    # Betting phase
     if Bets_On:
         Bet = float(number_validation("How much would you like to bet? $"))
         while Bet > Wallet or Bet < 0:
@@ -202,7 +203,6 @@ while GameRunning:
 
     print("")
 
-    print("")
     # Dealer gets his first card with a "hidden" card (actually pulled later)
     Card_Face, Dealer_Temp, Dealer_Ace = card_pull_message(Dealer_Ace, "The dealer", "shows", " + a hidden card.\n") # Card_Face does nothing for the dealer
     Dealer_Hand += Dealer_Temp
@@ -219,8 +219,9 @@ while GameRunning:
                 break
             else:
                 print("Invalid input, try again!")
-    print("")
     sleep(1)
+
+    print("") # Gap between different phases of the game
 
     # Give player's initial 2 cards.
     for i in range (0,2):
@@ -232,8 +233,9 @@ while GameRunning:
             Split_Check = True if Previous_Face == Card_Face and Player_Temp == 11 and Player_Hand == 12 else Split_Check # Separate check for 2 aces
         Previous_Face = Card_Face
 
-    print("") # Gap between Dealer's cards and Player's Hit/Stand phase
+    print("") # Gap between different phases of the game
 
+    # Player's turn
     while iteration <= split_number: # Nested loops exist solely for ability to handle infinite number of splits
         while Hit_Stand_Phase:
             if Split_Check and Double_Down and Bets_On and Wallet >= Bet:
@@ -297,21 +299,26 @@ while GameRunning:
                 Card_Face, Player_Temp, Player_Ace = card_pull_message(Player_Ace, "You", "pulled", "!\n")
                 Player_Hand, Player_Ace, Hit_Stand_Phase = bust_check(Player_Hand, Player_Ace, Player_Temp, Hit_Stand_Phase, "You")
 
+    # Dealer's turn as well as win/loss checks
     Hit_Stand_Phase = True # Resetting hit stand phase for dealer's hit/stand phase or next turn.
     index = int(0)
     if any(hand <= 21 for hand in Results) or Insurance_Bet != 0: # Basically if player is alive or insurance was bet, dealer plays
+        # Dealer's turn
         while Hit_Stand_Phase:
             if Dealer_Hand < 17:
-                stage = "shows" if Second_Dealer_Card else "pulled"
+                stage = "shows" if Second_Dealer_Card else "pulled" # Aforementioned variable to change show/pulled text
                 Card_Face, Dealer_Temp, Dealer_Ace = card_pull_message(Dealer_Ace, "The dealer", stage, "") # Card_Face does nothing for the dealer
                 Dealer_Hand, Dealer_Ace, Hit_Stand_Phase = bust_check(Dealer_Hand, Dealer_Ace, Dealer_Temp, Hit_Stand_Phase, "The dealer")
-                if Insurance_On and Insurance_Bet > 0 and Dealer_Hand == 21 and Second_Dealer_Card:
+                if Insurance_On and Insurance_Bet > 0 and Dealer_Hand == 21 and Second_Dealer_Card: # Second_Dealer_Card to check if this is a two-card blackjack
                         print(f"The dealer got a blackjack, You won ${Insurance_Bet * 2}!")
                         Wallet += (Insurance_Bet * 2)
+                elif Insurance_On and Insurance_Bet > 0 and Dealer_Hand != 21 and Second_Dealer_Card:
+                    print("The dealer did not get a blackjack, you lost your insurance bet.")
                 Second_Dealer_Card = False  # To prevent the dealer from "showing" the hidden card again
                 sleep (1)
             else:
                 break
+        # Win/loss checks
         for hand in Results:
             sleep(0.5)
             if hand > 21: # You busted but dealer didn't (if I busted I lose anyway so I don't think this check is necessary
@@ -351,7 +358,7 @@ while GameRunning:
         text_if_bet = f". You lost {Temp_Wallet - Wallet}" if Bets_On else text_if_bet
         print(f"You busted on all hands and lost, the dealer wins{text_if_bet}!")
     sleep(Sleep_Timer)
-    print("\n" * 25)
+    print("\n" * 25) # Clearing the screen for the next round
     round_index += 1 # To keep track of round
 
 
