@@ -3,6 +3,7 @@ The game includes features commonly found in real-world Blackjack, such as betti
 It is beginner-friendly yet offers options to customize gameplay for advanced users.
 
 Features:
+
 	Core Blackjack Mechanics: Players can hit, stand, and aim to get closer to 21 than the dealer without busting.
 	Betting System: Add stakes to your game with adjustable bets.
 	Advanced Rules: Includes insurance, splits, and double-downs to enhance gameplay strategy.
@@ -13,12 +14,14 @@ Features:
 	Interactive Menu: Accessible during gameplay for pausing or modifying settings.
 
 How to run:
+
 	Ensure Python 3.9 or higher is installed on your system.
 	Run the script using the following command:
 		python blackjack.py
 	Follow the on-screen instructions to set your initial wallet and begin the game.
 
-Gameplay Instructions
+Gameplay Instructions:
+
 	Objective: Get a hand total closer to 21 than the dealer’s without exceeding 21.
 	Starting the Game:
 		Input your wallet budget.
@@ -33,11 +36,13 @@ Gameplay Instructions
 		Dealer busts (exceeds 21).
 		Achieve a Blackjack (21 with your first two cards).
 
-Dependencies
+Dependencies:
+
 	No external libraries are required. 
 	The game uses Python's built-in "random" and "time" modules.
 
-What I Learned
+What I Learned:
+
 	Game Logic Design: Gained experience in implementing complex game rules, including handling edge cases like Blackjack on a double-down or split.
 	State Management: Mastered techniques to track and update game states dynamically (e.g., player hands, wallet balance, and settings).
 	User Input Validation: Enhanced understanding of robust input validation to ensure smooth and error-free gameplay.
