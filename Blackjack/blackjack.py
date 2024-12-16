@@ -1,7 +1,7 @@
 from time import sleep
 import random
 
-#TODO - Mayhaps a GUI? Currently only a TUI
+#TODO - Perhaps a GUI? Currently only a TUI
 #TODO - Add a way to change the amount of decks used in the game like most online casinos. Honestly probably pointless to do?
 #TODO - Add a way to change the amount of players/bets in the game (After splits). This only depends on whether I decide to launch this game somewhere.
 
@@ -310,8 +310,8 @@ while GameRunning:
                 Card_Face, Dealer_Temp, Dealer_Ace = card_pull_message(Dealer_Ace, "The dealer", stage, "") # Card_Face does nothing for the dealer
                 Dealer_Hand, Dealer_Ace, Hit_Stand_Phase = bust_check(Dealer_Hand, Dealer_Ace, Dealer_Temp, Hit_Stand_Phase, "The dealer")
                 if Insurance_On and Insurance_Bet > 0 and Dealer_Hand == 21 and Second_Dealer_Card: # Second_Dealer_Card to check if this is a two-card blackjack
-                        print(f"The dealer got a blackjack, You won ${Insurance_Bet * 2}!")
-                        Wallet += (Insurance_Bet * 2)
+                    print(f"The dealer got a blackjack, You won ${Insurance_Bet * 2}!")
+                    Wallet += (Insurance_Bet * 2)
                 elif Insurance_On and Insurance_Bet > 0 and Dealer_Hand != 21 and Second_Dealer_Card:
                     print("The dealer did not get a blackjack, you lost your insurance bet.")
                 Second_Dealer_Card = False  # To prevent the dealer from "showing" the hidden card again
